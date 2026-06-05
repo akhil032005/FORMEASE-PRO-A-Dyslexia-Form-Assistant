@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "FormEase Assistant Pro",
+  "version": "2.0",
+  "description": "Advanced dyslexia-friendly form helper with smart validation",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["dyslexia.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

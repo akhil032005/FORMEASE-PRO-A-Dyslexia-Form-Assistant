@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FormEase Pro - Dyslexia Assistant</title>
+  <style>
+    /* ===== GLOBAL RESET & VARIABLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      width: 400px;
+      background: linear-gradient(145deg, #ffffff 0%, #fafcff 100%);
+      padding: 24px;
+      color: #1e293b;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    /* Custom Scrollbar */
+    body::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    body::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 10px;
+    }
+
+    body::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+
+    /* ===== HEADER SECTION ===== */
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #eef2f6;
+    }
+
+    .app-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #0066cc, #0099ff);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 8px 16px rgba(0,102,204,0.2);
+    }
+
+    .app-title {
+      flex: 1;
+    }
+
+    .app-title h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0a1929;
+      margin-bottom: 4px;
+    }
+
+    .app-title p {
+      font-size: 12px;
+      color: #5a6b7a;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .status-badge {
+      background: #e8f4fd;
+      color: #0066cc;
+      padding: 6px 12px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    /* ===== MAIN CONTROL BUTTONS ===== */
+    .control-panel {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .btn-primary {
+      background: linear-gradient(145deg, #27ae60, #229954);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(145deg, #2ecc71, #27ae60);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(39,174,96,0.3);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(145deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: linear-gradient(145deg, #ff6b6b, #e74c3c);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(231,76,60,0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ===== SECTION CARDS ===== */
+    .section {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,102,204,0.08);
+      transition: all 0.3s ease;
+    }
+
+    .section:hover {
+      box-shadow: 0 12px 24px rgba(0,102,204,0.08);
+      border-color: rgba(0,102,204,0.2);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #f0f7ff, #e6f0fa);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #0066cc;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0a1929;
+    }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: #6b7b8a;
+      margin-top: 2px;
+    }
+
+    /* ===== TOGGLE SWITCH ===== */
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .toggle-item:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toggle-label span {
+      font-size: 14px;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    .toggle-desc {
+      font-size: 12px;
+      color: #7e8c9e;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* Custom Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 24px;
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e0;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    input:checked + .slider {
+      background: linear-gradient(145deg, #0066cc, #0052a3);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    /* ===== SLIDER CONTROL ===== */
+    .slider-container {
+      margin-top: 16px;
+      padding: 12px;
+      background: #f8fafd;
+      border-radius: 16px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .slider-header span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .slider-value {
+      background: #0066cc;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    input[type=range] {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border: 2px solid #0066cc;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 8px rgba(0,102,204,0.2);
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      background: #0066cc;
+    }
+
+    /* ===== BUTTON STYLES ===== */
+    .action-button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-top: 12px;
+      color: white;
+    }
+
+    .btn-blue { background: linear-gradient(145deg, #3498db, #2980b9); }
+    .btn-purple { background: linear-gradient(145deg, #9b59b6, #8e44ad); }
+    .btn-orange { background: linear-gradient(145deg, #e67e22, #d35400); }
+    .btn-green { background: linear-gradient(145deg, #27ae60, #229954); }
+    .btn-red { background: linear-gradient(145deg, #e74c3c, #c0392b); }
+
+    .action-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .action-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ===== VOICE BUTTON ACTIVE STATE ===== */
+    .voice-active {
+      animation: pulse-voice 1.5s infinite !important;
+      background: linear-gradient(145deg, #e74c3c, #c0392b) !important;
+    }
+
+    @keyframes pulse-voice {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+      }
+      50% {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(231, 76, 60, 0.8);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+      }
+    }
+
+    /* ===== MICROPHONE WARNING ===== */
+    .mic-warning {
+      font-size: 11px;
+      color: #e74c3c;
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #fef5f5;
+      border-radius: 10px;
+      border-left: 4px solid #e74c3c;
+      line-height: 1.5;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== THEME GRID ===== */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .theme-btn {
+      padding: 12px;
+      border: 2px solid transparent;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: white;
+    }
+
+    .theme-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .theme-indicator {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* ===== STATS CARD ===== */
+    .stats-card {
+      background: linear-gradient(145deg, #1a2634, #0f1a24);
+      border-radius: 18px;
+      padding: 18px;
+      color: white;
+      margin-top: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #a0b3c6;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      margin-top: 16px;
+    }
+
+    .progress-bar-fill {
+      height: 6px;
+      background: linear-gradient(90deg, #27ae60, #2ecc71);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+      margin: 20px 0;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      margin-top: 16px;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* ===== TOOLTIP ===== */
+    [title] {
+      position: relative;
+      cursor: help;
+    }
+
+    /* ===== BUTTON GROUPS ===== */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .button-group .action-button {
+      margin-top: 0;
+    }
+
+    /* ===== STATUS INDICATORS ===== */
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .status-active {
+      background: #27ae60;
+      box-shadow: 0 0 8px #27ae60;
+    }
+
+    .status-inactive {
+      background: #95a5a6;
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <div class="app-header">
+    <div class="app-icon">
+      ✨
+    </div>
+    <div class="app-title">
+      <h1>FormEase Pro</h1>
+      <p>DYSLEXIA-FRIENDLY ASSISTANT</p>
+    </div>
+    <div class="status-badge">
+      v2.0
+    </div>
+  </div>
+
+  <!-- ===== MAIN CONTROLS ===== -->
+  <div class="control-panel">
+    <button id="enableBtn" class="btn btn-primary" title="Enable dyslexia-friendly features">
+      <span>✅</span> Enable
+    </button>
+    <button id="disableBtn" class="btn btn-secondary" title="Disable all features">
+      <span>❌</span> Disable
+    </button>
+  </div>
+
+  <!-- ===== VOICE ASSISTANCE SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🎤</div>
+      <div>
+        <div class="section-title">Voice Assistance</div>
+        <div class="section-subtitle">Text-to-speech & voice feedback</div>
+      </div>
+    </div>
+
+    <div class="toggle-item">
+      <div style="flex: 1">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 16px;">🔊</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 2px;">Enable Text-to-Speech</div>
+            <div class="toggle-desc">Reads labels and errors aloud</div>
+          </div>
+        </div>
+      </div>
+      <label class="switch" title="Toggle voice feedback">
+        <input type="checkbox" id="ttsToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-item">
+      <div style="flex: 1">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 16px;">📝</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 2px;">Word-by-Word Reading</div>
+            <div class="toggle-desc">Speak each word as you type</div>
+          </div>
+        </div>
+      </div>
+      <label class="switch" title="Read each word as you type">
+        <input type="checkbox" id="wordByWordToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="slider-container">
+      <div class="slider-header">
+        <span>🎚️ Speech Speed</span>
+        <span class="slider-value" id="speedValue">Medium</span>
+      </div>
+      <input type="range" id="speechSpeed" min="0.5" max="1.5" step="0.1" value="1.0" title="Adjust speech speed">
+    </div>
+  </div>
+
+  <!-- ===== SMART VALIDATION SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">✅</div>
+      <div>
+        <div class="section-title">Smart Validation</div>
+        <div class="section-subtitle">Real-time field checking</div>
+      </div>
+    </div>
+
+    <div class="toggle-item">
+      <div style="flex: 1">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 16px;">🔍</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 2px;">Field-Specific Validation</div>
+            <div class="toggle-desc">Email, phone, password, zip code</div>
+          </div>
+        </div>
+      </div>
+      <label class="switch" title="Enable field validation">
+        <input type="checkbox" id="validationToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-item">
+      <div style="flex: 1">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 16px;">📊</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 2px;">Progress Tracking</div>
+            <div class="toggle-desc">Show form completion progress</div>
+          </div>
+        </div>
+      </div>
+      <label class="switch" title="Track form completion">
+        <input type="checkbox" id="progressToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="slider-container">
+      <div class="slider-header">
+        <span>📈 Assistance Level</span>
+        <span class="slider-value" id="assistanceValue">Adaptive</span>
+      </div>
+      <input type="range" id="assistanceLevel" min="1" max="3" step="1" value="2" title="Adjust assistance level">
+    </div>
+  </div>
+
+  <!-- ===== ADVANCED FEATURES SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🚀</div>
+      <div>
+        <div class="section-title">Advanced Features</div>
+        <div class="section-subtitle">Enhanced accessibility tools</div>
+      </div>
+    </div>
+
+    <!-- Reading Ruler -->
+    <div class="toggle-item">
+      <div style="flex: 1">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 16px;">📏</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 2px;">Reading Ruler</div>
+            <div class="toggle-desc">Colored overlay follows mouse - reduces visual stress</div>
+          </div>
+        </div>
+      </div>
+      <label class="switch" title="Enable reading ruler">
+        <input type="checkbox" id="readingRulerToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Auto Backup -->
+    <div class="toggle-item">
+      <div style="flex: 1">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 16px;">💾</span>
+          <div>
+            <div style="font-weight: 600; margin-bottom: 2px;">Auto Backup Form Data</div>
+            <div class="toggle-desc">Automatically saves your form data every 30 seconds</div>
+          </div>
+        </div>
+      </div>
+      <label class="switch" title="Enable auto backup">
+        <input type="checkbox" id="autoBackupToggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Backup & Restore Buttons -->
+    <div class="button-group">
+      <button id="backupNowBtn" class="action-button btn-blue" style="margin: 0; width: 50%;" title="Backup form data now">
+        💾 Backup Now
+      </button>
+      <button id="restoreBtn" class="action-button btn-purple" style="margin: 0; width: 50%;" title="Restore last backup">
+        🔄 Restore
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== VOICE INPUT SECTION (ENHANCED) ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🎙️</div>
+      <div>
+        <div class="section-title">Voice Input</div>
+        <div class="section-subtitle">Speak instead of type</div>
+      </div>
+    </div>
+
+    <button id="voiceInputBtn" class="action-button btn-orange" title="Click to start voice typing">
+      🎤 Start Voice Typing
+    </button>
+    
+    <!-- Microphone permission warning will be inserted here dynamically -->
+    
+    <div class="toggle-desc" style="margin-top: 12px; text-align: center; background: #f8f9fa; padding: 10px; border-radius: 10px;">
+      <span style="display: block; margin-bottom: 5px; font-weight: 600;">📋 How to use:</span>
+      1. Click any text field on the page<br>
+      2. Click this microphone button<br>
+      3. Speak clearly - your words appear!
+    </div>
+    
+    <div style="display: flex; align-items: center; justify-content: center; margin-top: 8px; gap: 5px; font-size: 11px; color: #7e8c9e;">
+      <span class="status-indicator status-inactive" id="micStatus"></span>
+      <span id="micStatusText">Microphone ready</span>
+    </div>
+  </div>
+
+  <!-- ===== COLOR THEMES SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🎨</div>
+      <div>
+        <div class="section-title">Dyslexia-Friendly Themes</div>
+        <div class="section-subtitle">Choose your comfort colors</div>
+      </div>
+    </div>
+
+    <div class="theme-grid">
+      <button id="themeDefault" class="theme-btn" style="border-color: #3498db;" title="Default theme">
+        <span class="theme-indicator" style="background: #3498db;"></span>
+        Default
+      </button>
+      <button id="themeCream" class="theme-btn" style="background: #fef9e7; color: #3e2723;" title="Cream theme - easy on eyes">
+        <span class="theme-indicator" style="background: #8d6e63;"></span>
+        Cream
+      </button>
+      <button id="themeBlue" class="theme-btn" style="background: #e3f2fd; color: #0d47a1;" title="Blue light theme">
+        <span class="theme-indicator" style="background: #42a5f5;"></span>
+        Blue Light
+      </button>
+      <button id="themeGreen" class="theme-btn" style="background: #e8f5e9; color: #1b5e20;" title="Green comfort theme">
+        <span class="theme-indicator" style="background: #66bb6a;"></span>
+        Green
+      </button>
+      <button id="themeDark" class="theme-btn" style="background: #1a1a1a; color: white; grid-column: span 2; border-color: #ffaa00;" title="High contrast dark theme">
+        <span class="theme-indicator" style="background: #ffaa00;"></span>
+        High Contrast
+      </button>
+    </div>
+  </div>
+  
+  <!-- ===== AUTO-FILL SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">⚡</div>
+      <div>
+        <div class="section-title">One-Click Auto-Fill</div>
+        <div class="section-subtitle">Save and fill forms instantly</div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button id="saveProfileBtn" class="action-button btn-green" style="margin:0; width:50%;" title="Save current form as profile">
+        💾 Save Profile
+      </button>
+      <button id="loadProfileBtn" class="action-button btn-blue" style="margin:0; width:50%;" title="Load saved profile">
+        📋 Load Profile
+      </button>
+    </div>
+    
+    <button id="autoFillBtn" class="action-button btn-purple" title="Auto-fill current form with saved data">
+      ⚡ Auto-Fill Current Form
+    </button>
+    
+    <div class="toggle-desc" style="margin-top:12px; text-align:center; background: #f0f7ff; padding: 8px; border-radius: 8px;">
+      Save your details once, fill any form with one click!
+    </div>
+  </div>
+
+  <!-- ===== FONT CUSTOMIZATION SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🔤</div>
+      <div>
+        <div class="section-title">Font Settings</div>
+        <div class="section-subtitle">Adjust for better readability</div>
+      </div>
+    </div>
+
+    <div class="button-group" style="margin-bottom: 16px;">
+      <button id="decreaseFontBtn" class="btn" style="flex:1; background:#f1f5f9; color:#2c3e50; padding:10px;" title="Decrease font size">A-</button>
+      <button id="increaseFontBtn" class="btn" style="flex:1; background:#f1f5f9; color:#2c3e50; padding:10px;" title="Increase font size">A+</button>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <div style="font-size:13px; font-weight:600; margin-bottom:8px; color:#2c3e50;">Font Family:</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button id="fontArial" class="theme-btn" style="justify-content:center; font-family:Arial;" title="Arial font">Arial</button>
+        <button id="fontComic" class="theme-btn" style="justify-content:center; font-family:'Comic Sans MS';" title="Comic Sans font">Comic</button>
+        <button id="fontOpenDyslexic" class="theme-btn" style="justify-content:center; font-family:OpenDyslexic;" title="OpenDyslexic font - designed for dyslexia">OpenDyslexic</button>
+        <button id="fontVerdana" class="theme-btn" style="justify-content:center; font-family:Verdana;" title="Verdana font">Verdana</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== READING GUIDE SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">🔦</div>
+      <div>
+        <div class="section-title">Reading Guide</div>
+        <div class="section-subtitle">Highlight current line</div>
+      </div>
+    </div>
+
+    <div class="toggle-item">
+      <div style="flex:1">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size:16px;">📖</span>
+          <div>
+            <div style="font-weight:600; margin-bottom:2px;">Enable Reading Guide</div>
+            <div class="toggle-desc">Highlights the field you're reading</div>
+          </div>
+        </div>
+      </div>
+      <label class="switch" title="Toggle reading guide">
+        <input type="checkbox" id="readingGuideToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- ===== ERROR SUMMARY SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div>
+        <div class="section-title">Error Summary</div>
+        <div class="section-subtitle">See all errors at once</div>
+      </div>
+    </div>
+
+    <button id="showErrorSummaryBtn" class="action-button btn-orange" title="Show all form errors">
+      🔍 Show All Errors
+    </button>
+  </div>
+
+  <!-- ===== DATA MANAGEMENT SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">💿</div>
+      <div>
+        <div class="section-title">Data Management</div>
+        <div class="section-subtitle">Export/Import your settings</div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button id="exportDataBtn" class="action-button btn-blue" style="margin:0; width:50%;" title="Export all settings">
+        📤 Export
+      </button>
+      <button id="importDataBtn" class="action-button btn-purple" style="margin:0; width:50%;" title="Import settings from file">
+        📥 Import
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== STATISTICS SECTION ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <div>
+        <div class="section-title">Your Progress</div>
+        <div class="section-subtitle">Session statistics</div>
+      </div>
+    </div>
+
+    <div class="stats-card">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <span style="font-size: 20px;">⭐</span>
+        <span style="font-weight: 600; font-size: 14px;">Today's Performance</span>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" id="fieldsCompleted">0</div>
+          <div class="stat-label">Fields Done</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="correctionsUsed">0</div>
+          <div class="stat-label">Corrections</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="timeSaved">0 min</div>
+          <div class="stat-label">Time Saved</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="efficiencyPercent">100%</div>
+          <div class="stat-label">Efficiency</div>
+        </div>
+      </div>
+
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="efficiencyBar" style="width: 100%;"></div>
+      </div>
+
+      <button id="resetStats" style="width: 100%; margin-top: 16px; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; font-size: 12px; cursor: pointer; transition: all 0.3s ease;" title="Reset all statistics">
+        🔄 Reset Statistics
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="footer">
+    FormEase Pro • Making forms accessible for everyone • v2.0
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
